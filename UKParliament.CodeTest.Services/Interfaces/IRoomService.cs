@@ -1,9 +1,8 @@
-﻿using UKParliament.CodeTest.Services.Models;
-using UKParliament.CodeTest.Services.Results;
+﻿
 using System;
 using System.Threading.Tasks;
 
-namespace UKParliament.CodeTest.Services.Interfaces
+namespace UKParliament.CodeTest.Services
 {
     public interface IRoomService
     {
@@ -36,5 +35,10 @@ namespace UKParliament.CodeTest.Services.Interfaces
         /// Remove the room
         /// </summary>
         Task<ServiceResult> RemoveAsync(int id, RemoveRoomModel model);
+
+        /// <summary>
+        /// Remove rooms
+        /// </summary>
+        Task<ServiceResult> RemoveRangeAsync(RemoveRoomsModel model);
     }
 }

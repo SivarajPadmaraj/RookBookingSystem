@@ -1,9 +1,7 @@
-using UKParliament.CodeTest.Data.Contexts;
-using UKParliament.CodeTest.Data.Domain;
-using UKParliament.CodeTest.Data.Repositories;
-using UKParliament.CodeTest.Services.Implementations;
-using UKParliament.CodeTest.Services.Models;
-using UKParliament.CodeTest.Web.Controllers;
+using UKParliament.CodeTest.Data;
+using UKParliament.CodeTest.Services;
+
+using UKParliament.CodeTest.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -54,6 +52,24 @@ namespace UKParliament.CodeTest.Tests
         }
 
         [Fact]
+        public async Task GetById_Person_Not_Found_Test()
+        {
+            await RunInContextAsync(async peopleController =>
+            {
+                var personId = 2;
+                var person = GetTestPersonModel();
+
+                //Act  
+                await peopleController.AddAsync(person);
+
+                var result = await peopleController.GetAsync(personId);
+
+                //Assert  
+                Assert.IsType<NotFoundObjectResult>(result);
+            });
+        }
+
+        [Fact]
         public async Task Add_Person_Test()
         {
             await RunInContextAsync(async peopleController =>
@@ -69,14 +85,15 @@ namespace UKParliament.CodeTest.Tests
         }
 
         [Fact]
-        public async Task Add_Null_Person_Obect_Test()
+        public async Task Add_Person_FirstName_Is_Required_Test()
         {
             await RunInContextAsync(async peopleController =>
             {
-               
+                var person = GetTestPersonModel();
+                person.FirstName = null;
 
                 //Act  
-                var result = await peopleController.AddAsync(null);
+                var result = await peopleController.AddAsync(person);
 
                 //Assert  
                 Assert.IsType<BadRequestObjectResult>(result);
@@ -103,6 +120,25 @@ namespace UKParliament.CodeTest.Tests
         }
 
         [Fact]
+        public async Task Update_Person_Last_Name_Is_Required_Test()
+        {
+            await RunInContextAsync(async peopleController =>
+            {
+                var personId = 1;
+                var person = GetTestPersonModel();
+                await peopleController.AddAsync(person);
+
+                person.LastName = null;
+
+                // Act
+                var result = await peopleController.UpdateAsync(personId, person);
+
+                //Assert  
+                Assert.IsType<BadRequestObjectResult>(result);
+            });
+        }
+
+        [Fact]
         public async Task Remove_Person_Test()
         {
             await RunInContextAsync(async peopleController =>
@@ -119,11 +155,28 @@ namespace UKParliament.CodeTest.Tests
             });
         }
 
+        [Fact]
+        public async Task Remove_Person_Not_Found_Test()
+        {
+            await RunInContextAsync(async peopleController =>
+            {
+                var personId = 2;
+                var person = GetTestPersonModel();
+                await peopleController.AddAsync(person);
+
+                // Act
+                var result = await peopleController.RemoveAsync(personId);
+
+                //Assert  
+                Assert.IsType<NotFoundObjectResult>(result);
+            });
+        }
+
         // Helpers
 
         private async Task RunInContextAsync(Func<PeopleController, Task> func)
         {
-            var dbOptions = new DbContextOptionsBuilder<RoomBookingsContext>().UseInMemoryDatabase(databaseName: "RoomBookings" + DateTime.UtcNow.Millisecond)
+            var dbOptions = new DbContextOptionsBuilder<RoomBookingsContext>().UseInMemoryDatabase(databaseName: "RoomBookings" + new Random().Next(1, 100000))
                                                                               .Options;
 
             using (var context = new RoomBookingsContext(dbOptions))

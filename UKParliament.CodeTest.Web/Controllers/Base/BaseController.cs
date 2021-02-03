@@ -1,30 +1,41 @@
-﻿using UKParliament.CodeTest.Services.Results;
+﻿using UKParliament.CodeTest.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace UKParliament.CodeTest.Web.Controllers.Base
+namespace UKParliament.CodeTest.Web
 {
     public abstract class BaseController : ControllerBase
     {
         [NonAction]
         public ObjectResult BaseResult(ServiceResult result)
         {
-            ObjectResult serviceresult = default;
+            ObjectResult apiResult = default;
+
             if (result.IsSucceeded)
             {
-                serviceresult= (ObjectResult)Ok(result.Data);
+                apiResult = Ok(result.Data);
             }
             else
             {
                 if (result.StatusCode == HttpStatusCode.NotFound)
-                    serviceresult = NotFound(result.ErrorMessage);
+                {
+                    apiResult = NotFound(result.ErrorMessage);
+                }
                 else if (result.StatusCode == HttpStatusCode.BadRequest)
-                    serviceresult = BadRequest(result.ErrorMessage);
+                {
+                    apiResult = BadRequest(result.ErrorMessage);
+                }
+                else if (result.StatusCode == HttpStatusCode.UnprocessableEntity)
+                {
+                    apiResult = UnprocessableEntity(result.ErrorMessage);
+                }
                 else if (result.StatusCode == HttpStatusCode.InternalServerError)
-                    serviceresult = BadRequest(HttpStatusCode.InternalServerError);
+                {
+                    apiResult = BadRequest(HttpStatusCode.InternalServerError);
+                }
             }
 
-            return serviceresult;
+            return apiResult;
         }
     }
 }

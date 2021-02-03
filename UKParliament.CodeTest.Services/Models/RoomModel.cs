@@ -1,6 +1,6 @@
-﻿using UKParliament.CodeTest.Services.Models.Base;
+﻿
 
-namespace UKParliament.CodeTest.Services.Models
+namespace UKParliament.CodeTest.Services
 {
     public sealed class RoomModel : BaseModel
     {

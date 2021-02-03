@@ -1,7 +1,7 @@
-﻿using UKParliament.CodeTest.Data.Domain.Base;
+﻿
 using System;
 
-namespace UKParliament.CodeTest.Data.Domain
+namespace UKParliament.CodeTest.Data
 {
     public sealed class Booking : BaseEntity
     {

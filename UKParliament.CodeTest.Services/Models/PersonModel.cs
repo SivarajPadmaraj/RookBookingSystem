@@ -1,7 +1,7 @@
-﻿using UKParliament.CodeTest.Services.Models.Base;
+﻿
 using System;
 
-namespace UKParliament.CodeTest.Services.Models
+namespace UKParliament.CodeTest.Services
 {
     public sealed class PersonModel : BaseModel
     {

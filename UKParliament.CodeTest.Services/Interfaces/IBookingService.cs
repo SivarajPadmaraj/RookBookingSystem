@@ -1,8 +1,7 @@
-﻿using UKParliament.CodeTest.Services.Models;
-using UKParliament.CodeTest.Services.Results;
+﻿
 using System.Threading.Tasks;
 
-namespace UKParliament.CodeTest.Services.Interfaces
+namespace UKParliament.CodeTest.Services
 {
     public interface IBookingService
     {

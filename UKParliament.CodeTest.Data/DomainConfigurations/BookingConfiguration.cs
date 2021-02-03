@@ -1,9 +1,8 @@
-﻿using UKParliament.CodeTest.Data.Domain;
-using UKParliament.CodeTest.Data.DomainConfigurations.Base;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace UKParliament.CodeTest.Data.DomainConfigurations
+namespace UKParliament.CodeTest.Data
 {
     internal sealed class BookingConfiguration : BaseEntityConfiguration<Booking>
     {

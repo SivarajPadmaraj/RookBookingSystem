@@ -1,8 +1,8 @@
-﻿using UKParliament.CodeTest.Data.Domain.Base;
+﻿using UKParliament.CodeTest.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace UKParliament.CodeTest.Data.DomainConfigurations.Base
+namespace UKParliament.CodeTest.Data
 {
     internal abstract class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T> where T : BaseEntity
     {

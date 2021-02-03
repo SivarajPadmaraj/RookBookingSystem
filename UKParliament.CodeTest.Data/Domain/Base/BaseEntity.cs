@@ -1,4 +1,4 @@
-﻿namespace UKParliament.CodeTest.Data.Domain.Base
+﻿namespace UKParliament.CodeTest.Data
 {
     public abstract class BaseEntity
     {

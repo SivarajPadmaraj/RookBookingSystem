@@ -1,4 +1,4 @@
-﻿namespace UKParliament.CodeTest.Services.Models.Base
+﻿namespace UKParliament.CodeTest.Services
 {
     public abstract class BaseModel
     {

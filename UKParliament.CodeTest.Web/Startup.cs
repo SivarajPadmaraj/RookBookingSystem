@@ -1,7 +1,5 @@
-using UKParliament.CodeTest.Data.Contexts;
-using UKParliament.CodeTest.Data.Repositories;
-using UKParliament.CodeTest.Services.Implementations;
-using UKParliament.CodeTest.Services.Interfaces;
+using UKParliament.CodeTest.Data;
+using UKParliament.CodeTest.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

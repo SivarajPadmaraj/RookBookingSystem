@@ -1,10 +1,9 @@
-﻿using UKParliament.CodeTest.Data.Contexts;
-using UKParliament.CodeTest.Data.Domain.Base;
+﻿
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
-namespace UKParliament.CodeTest.Data.Repositories
+namespace UKParliament.CodeTest.Data
 {
     public interface IRepository<T> : IDisposable where T : BaseEntity
     {

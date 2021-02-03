@@ -1,25 +1,22 @@
-﻿using UKParliament.CodeTest.Services.Interfaces;
-using UKParliament.CodeTest.Services.Models;
-using UKParliament.CodeTest.Web.Controllers.Base;
+﻿using UKParliament.CodeTest.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace UKParliament.CodeTest.Web.Controllers
+namespace UKParliament.CodeTest.Web
 {
- 
     [Route("api/[controller]")]
     [ApiController]
-    public class BookingController :  BaseController
+    public class BookingsController : BaseController
     {
         private readonly IBookingService _bookingService;
 
-        public BookingController(IBookingService bookingService)
+        public BookingsController(IBookingService bookingService)
         {
 
             _bookingService = bookingService;
         }
-        [HttpPost("bookings")]
+        [HttpPost]
         public async Task<ObjectResult> BookAsync([FromBody] BookingRequestModel model)
         {
             var result = await _bookingService.BookAsync(model);
@@ -27,7 +24,7 @@ namespace UKParliament.CodeTest.Web.Controllers
             return BaseResult(result);
         }
 
-        [HttpDelete("bookings/{id:int}")]
+        [HttpDelete("{id:int}")]
         public async Task<ObjectResult> RemoveBookingAsync([FromRoute] int id)
         {
             var result = await _bookingService.RemoveAsync(id);

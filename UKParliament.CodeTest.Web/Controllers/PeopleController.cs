@@ -1,11 +1,9 @@
-﻿using UKParliament.CodeTest.Services.Interfaces;
-using UKParliament.CodeTest.Services.Models;
-using UKParliament.CodeTest.Web.Controllers.Base;
+﻿using UKParliament.CodeTest.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace UKParliament.CodeTest.Web.Controllers
+namespace UKParliament.CodeTest.Web
 {
     [ApiController]
     [Route("[controller]")]
@@ -15,7 +13,6 @@ namespace UKParliament.CodeTest.Web.Controllers
 
         public PeopleController(IPersonService personService)
         {
-           
             _personService = personService;
         }
 
@@ -43,7 +40,7 @@ namespace UKParliament.CodeTest.Web.Controllers
         public async Task<ObjectResult> AddAsync([FromBody] PersonRequestModel model)
         {
             var result = await _personService.AddAsync(model);
-            
+
             return BaseResult(result);
         }
 

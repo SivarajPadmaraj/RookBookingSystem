@@ -1,7 +1,7 @@
-﻿using UKParliament.CodeTest.Data.Domain;
+﻿
 using Microsoft.EntityFrameworkCore;
 
-namespace UKParliament.CodeTest.Data.Contexts
+namespace UKParliament.CodeTest.Data
 {
     public class RoomBookingsContext : DbContext
     {

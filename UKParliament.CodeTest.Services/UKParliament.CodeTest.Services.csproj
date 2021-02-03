@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UKParliament.CodeTest.Data\UKParliament.CodeTest.Data.csproj" />
+    <ProjectReference Include="..\UKParliament.CodeTest.Utilities\UKParliament.CodeTest.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

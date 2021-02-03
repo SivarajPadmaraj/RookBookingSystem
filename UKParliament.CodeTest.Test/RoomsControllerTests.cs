@@ -1,9 +1,5 @@
-﻿using UKParliament.CodeTest.Data.Contexts;
-using UKParliament.CodeTest.Data.Domain;
-using UKParliament.CodeTest.Data.Repositories;
-using UKParliament.CodeTest.Services.Implementations;
-using UKParliament.CodeTest.Services.Models;
-using UKParliament.CodeTest.Web.Controllers;
+﻿using UKParliament.CodeTest.Services;
+using UKParliament.CodeTest.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-
+using UKParliament.CodeTest.Data;
 namespace UKParliament.CodeTest.Tests
 {
     public class RoomsControllerTests
@@ -19,11 +15,13 @@ namespace UKParliament.CodeTest.Tests
         [Fact]
         public async Task GetAll_Rooms_Test()
         {
-            await RunInContextAsync(async (roomsController, peopleController) =>
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
             {
                 var roomsCount = 2;
                 var room1 = GetTestRoomModel();
+                room1.Name = "Room 1";
                 var room2 = GetTestRoomModel();
+                room2.Name = "Room 2";
 
                 //Act  
                 await roomsController.AddAsync(room1);
@@ -39,7 +37,7 @@ namespace UKParliament.CodeTest.Tests
         [Fact]
         public async Task Get_AvailableRooms_Test()
         {
-            await RunInContextAsync(async (roomsController, peopleController) =>
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
             {
                 var availableRoomsCount = 1;
                 var room1Id = 1;
@@ -72,8 +70,8 @@ namespace UKParliament.CodeTest.Tests
                     EndDate = date.AddMinutes(80)
                 };
 
-                await roomsController.BookAsync(booking1);
-                await roomsController.BookAsync(booking2);
+                await bookingsController.BookAsync(booking1);
+                await bookingsController.BookAsync(booking2);
 
                 var result = await roomsController.GetAvailableRoomsAsync(date.AddMinutes(40), date.AddMinutes(80));
 
@@ -85,7 +83,7 @@ namespace UKParliament.CodeTest.Tests
         [Fact]
         public async Task GetById_Room_Test()
         {
-            await RunInContextAsync(async (roomsController, peopleController) =>
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
             {
                 var roomId = 1;
                 var room = GetTestRoomModel();
@@ -101,9 +99,27 @@ namespace UKParliament.CodeTest.Tests
         }
 
         [Fact]
+        public async Task GetById_Room_Not_Found_Test()
+        {
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
+            {
+                var roomId = 2;
+                var room = GetTestRoomModel();
+
+                //Act  
+                await roomsController.AddAsync(room);
+
+                var result = await roomsController.GetAsync(roomId);
+
+                //Assert  
+                Assert.IsType<NotFoundObjectResult>(result);
+            });
+        }
+
+        [Fact]
         public async Task Add_Room_Test()
         {
-            await RunInContextAsync(async (roomsController, peopleController) =>
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
             {
                 var room = GetTestRoomModel();
 
@@ -116,59 +132,15 @@ namespace UKParliament.CodeTest.Tests
         }
 
         [Fact]
-        public async Task Add_ValidRoomBooking_Test()
+        public async Task Add_Room_Name_Is_Required_Test()
         {
-            await RunInContextAsync(async (roomsController, peopleController) =>
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
             {
-                var roomId = 1;
-                var personId = 1;
                 var room = GetTestRoomModel();
-                var person = GetTestPersonModel();
+                room.Name = null;
 
                 //Act  
-                await roomsController.AddAsync(room);
-                await peopleController.AddAsync(person);
-
-                var date = DateTime.Now;
-                BookingRequestModel booking = new BookingRequestModel()
-                {
-                    PersonId = personId,
-                    RoomId = roomId,
-                    StartDate = date,
-                    EndDate = date.AddMinutes(30)
-                };
-
-                var result = await roomsController.BookAsync(booking);
-
-                //Assert  
-                Assert.IsType<OkObjectResult>(result);
-            });
-        }
-
-        [Fact]
-        public async Task Add_InvalidRoomBooking_Test()
-        {
-            await RunInContextAsync(async (roomsController, peopleController) =>
-            {
-                var roomId = 1;
-                var personId = 1;
-                var room = GetTestRoomModel();
-                var person = GetTestPersonModel();
-
-                //Act  
-                await roomsController.AddAsync(room);
-                await peopleController.AddAsync(person);
-
-                var date = DateTime.Now;
-                BookingRequestModel booking = new BookingRequestModel()
-                {
-                    PersonId = personId,
-                    RoomId = roomId,
-                    StartDate = date,
-                    EndDate = date.AddHours(1.5)
-                };
-
-                var result = await roomsController.BookAsync(booking);
+                var result = await roomsController.AddAsync(room);
 
                 //Assert  
                 Assert.IsType<BadRequestObjectResult>(result);
@@ -176,41 +148,25 @@ namespace UKParliament.CodeTest.Tests
         }
 
         [Fact]
-        public async Task Remove_RoomBooking_Test()
+        public async Task Add_Room_Duplicate_Room_Name_Test()
         {
-            await RunInContextAsync(async (roomsController, peopleController) =>
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
             {
-                var roomId = 1;
-                var personId = 1;
-                var bookingId = 1;
                 var room = GetTestRoomModel();
-                var person = GetTestPersonModel();
 
                 //Act  
                 await roomsController.AddAsync(room);
-                await peopleController.AddAsync(person);
-
-                var date = DateTime.Now;
-                BookingRequestModel booking = new BookingRequestModel()
-                {
-                    PersonId = personId,
-                    RoomId = roomId,
-                    StartDate = date,
-                    EndDate = date.AddMinutes(30)
-                };
-
-                await roomsController.BookAsync(booking);
-                var result = await roomsController.RemoveBookingAsync(bookingId);
+                var result = await roomsController.AddAsync(room);
 
                 //Assert  
-                Assert.IsType<OkObjectResult>(result);
+                Assert.IsType<UnprocessableEntityObjectResult>(result);
             });
         }
 
         [Fact]
         public async Task Update_Room_Test()
         {
-            await RunInContextAsync(async (roomsController, peopleController) =>
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
             {
                 var roomId = 1;
                 var room = GetTestRoomModel();
@@ -227,9 +183,28 @@ namespace UKParliament.CodeTest.Tests
         }
 
         [Fact]
+        public async Task Update_Room_Name_Is_Required_Test()
+        {
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
+            {
+                var roomId = 1;
+                var room = GetTestRoomModel();
+                await roomsController.AddAsync(room);
+
+                room.Name = null;
+
+                // Act
+                var result = await roomsController.UpdateAsync(roomId, room);
+
+                //Assert  
+                Assert.IsType<BadRequestObjectResult>(result);
+            });
+        }
+
+        [Fact]
         public async Task Remove_Room_Test()
         {
-            await RunInContextAsync(async (roomsController, peopleController) =>
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
             {
                 var roomId = 1;
                 var room = GetTestRoomModel();
@@ -243,9 +218,52 @@ namespace UKParliament.CodeTest.Tests
             });
         }
 
+        [Fact]
+        public async Task Remove_Room_Not_Found_Test()
+        {
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
+            {
+                var roomId = 2;
+                var room = GetTestRoomModel();
+                await roomsController.AddAsync(room);
+
+                // Act
+                var result = await roomsController.RemoveAsync(roomId, null);
+
+                //Assert  
+                Assert.IsType<NotFoundObjectResult>(result);
+            });
+        }
+
+        [Fact]
+        public async Task Remove_RoomRange_Test()
+        {
+            await RunInContextAsync(async (roomsController, peopleController, bookingsController) =>
+            {
+                var roomsCount = 0;
+                var room1Id = 1;
+                var room2Id = 2;
+                var room1 = GetTestRoomModel();
+                room1.Name = "Room 1";
+                var room2 = GetTestRoomModel();
+                room2.Name = "Room 2";
+
+                //Act  
+                await roomsController.AddAsync(room1);
+                await roomsController.AddAsync(room2);
+
+                await roomsController.RemoveRangeAsync(new RemoveRoomsModel() { RoomIds = new int[] { room1Id, room2Id } });
+
+                var result = await roomsController.GetAllAsync(null);
+
+                //Assert  
+                Assert.Equal(roomsCount, ((IEnumerable<RoomModel>)result.Value).Count());
+            });
+        }
+
         // Helpers
 
-        private async Task RunInContextAsync(Func<RoomsController, PeopleController, Task> func)
+        private async Task RunInContextAsync(Func<RoomsController, PeopleController, BookingsController, Task> func)
         {
             var dbOptions = new DbContextOptionsBuilder<RoomBookingsContext>().UseInMemoryDatabase(databaseName: "RoomBookings" + new Random().Next(1, 100000))
                                                                               .Options;
@@ -260,9 +278,11 @@ namespace UKParliament.CodeTest.Tests
 
                 var _mockRoomRepository = new Repository<Room>(context);
                 var _mockRoomService = new RoomService(_mockRoomRepository, _mockBookingRepository);
-                var _mockRoomsController = new RoomsController(_mockRoomService, _mockBookingService);
+                var _mockRoomsController = new RoomsController(_mockRoomService);
 
-                await func(_mockRoomsController, _mockPeopleController);
+                var _mockBookingsController = new BookingsController(_mockBookingService);
+
+                await func(_mockRoomsController, _mockPeopleController, _mockBookingsController);
             }
         }
 

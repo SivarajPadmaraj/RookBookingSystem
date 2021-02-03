@@ -1,17 +1,14 @@
-﻿using UKParliament.CodeTest.Data.Domain;
-using UKParliament.CodeTest.Data.Repositories;
-using UKParliament.CodeTest.Services.Interfaces;
-using UKParliament.CodeTest.Services.Models;
-using UKParliament.CodeTest.Services.Results;
+﻿using UKParliament.CodeTest.Data;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
+using System.Threading.Tasks;
+using UKParliament.CodeTest.Utilities;
 
-namespace UKParliament.CodeTest.Services.Implementations
+namespace UKParliament.CodeTest.Services
 {
     public sealed class RoomService : IRoomService
     {
@@ -33,7 +30,12 @@ namespace UKParliament.CodeTest.Services.Implementations
             {
                 if (model == null || string.IsNullOrWhiteSpace(model.Name))
                 {
-                    return ServiceResult.Error(ErrorMessages.InvalidModel,HttpStatusCode.BadRequest);
+                    return ServiceResult.Error(ErrorMessages.InvalidModel, HttpStatusCode.BadRequest);
+                }
+
+                if (_roomRepository.Table.Any(e => e.Name == model.Name))
+                {
+                    return ServiceResult.Error(ErrorMessages.InvalidModel, HttpStatusCode.UnprocessableEntity);
                 }
 
                 Room room = new Room(model.Name);
@@ -90,7 +92,7 @@ namespace UKParliament.CodeTest.Services.Implementations
                                                           .AsNoTracking()
                                                           .Where(e => e.Bookings.All(b => (startDate > b.EndDate && startDate < b.StartDate // Case 1: When the given range is between to bookings
                                                                                           && endDate > b.EndDate && endDate < b.StartDate)
-                                                                                          || (endDate > b.EndDate && startDate > b.EndDate ) // Case 2: When the given range is next the bookings
+                                                                                          || (endDate > b.EndDate && startDate > b.EndDate) // Case 2: When the given range is next the bookings
                                                                                           || (endDate < b.StartDate && startDate < b.StartDate))) // Case 3: When the given range is before the bookings
                                                           .Select(e => new RoomModel()
                                                           {
@@ -112,12 +114,12 @@ namespace UKParliament.CodeTest.Services.Implementations
                 Room room = await _roomRepository.Table.AsNoTracking()
                                                        .FirstOrDefaultAsync(e => e.Id == id);
 
-                var result = room == null ? null
-                                          : new RoomModel()
-                                          {
-                                              Id = room.Id,
-                                              Name = room.Name
-                                          };
+                if (room == null)
+                {
+                    return ServiceResult.Error(ErrorMessages.NotFound, HttpStatusCode.NotFound);
+                }
+
+                var result = new RoomModel() { Id = room.Id, Name = room.Name };
 
                 return ServiceResult.Success(result);
             }
@@ -140,7 +142,7 @@ namespace UKParliament.CodeTest.Services.Implementations
 
                 if (room == null)
                 {
-                    return ServiceResult.Error(ErrorMessages.NotFound,HttpStatusCode.NotFound);
+                    return ServiceResult.Error(ErrorMessages.NotFound, HttpStatusCode.NotFound);
                 }
 
                 // If we are looking for transferring the bookings to another room
@@ -152,10 +154,39 @@ namespace UKParliament.CodeTest.Services.Implementations
                     }
                 }
 
+                var local = _roomRepository.Context.Set<Room>().Local.FirstOrDefault(e => e.Id == id);
+
+                if (local != null)
+                {
+                    _roomRepository.Context.Entry(local).State = EntityState.Detached;
+                }
+
                 _roomRepository.Remove(room);
                 await _roomRepository.SaveChangesAsync();
 
                 return ServiceResult.Success(room.Id);
+            }
+            catch (Exception e)
+            {
+                return ServiceResult.Error(e.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// Remove rooms
+        /// </summary>
+        public async Task<ServiceResult> RemoveRangeAsync(RemoveRoomsModel model)
+        {
+            try
+            {
+                RemoveRoomModel removeRoomModel = new RemoveRoomModel() { MoveBookings = model.MoveBookings, NewRoomId = model.NewRoomId };
+
+                foreach (int roomId in model.RoomIds)
+                {
+                    await RemoveAsync(roomId, removeRoomModel);
+                }
+
+                return ServiceResult.Success(model.RoomIds);
             }
             catch (Exception e)
             {
@@ -175,7 +206,7 @@ namespace UKParliament.CodeTest.Services.Implementations
 
                 if (room == null)
                 {
-                    return ServiceResult.Error(ErrorMessages.NotFound,HttpStatusCode.NotFound);
+                    return ServiceResult.Error(ErrorMessages.NotFound, HttpStatusCode.NotFound);
                 }
 
                 var local = _roomRepository.Context.Set<Room>().Local.FirstOrDefault(e => e.Id == id);

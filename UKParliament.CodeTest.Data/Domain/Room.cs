@@ -1,9 +1,9 @@
-﻿using UKParliament.CodeTest.Data.Domain.Base;
-
+﻿
+using UKParliament.CodeTest.Utilities;
 using System;
 using System.Collections.Generic;
 
-namespace UKParliament.CodeTest.Data.Domain
+namespace UKParliament.CodeTest.Data
 {
     public sealed class Room : BaseEntity
     {

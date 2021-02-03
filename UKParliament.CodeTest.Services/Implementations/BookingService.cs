@@ -1,15 +1,12 @@
-﻿using UKParliament.CodeTest.Data.Domain;
-using UKParliament.CodeTest.Data.Repositories;
-using UKParliament.CodeTest.Services.Interfaces;
-using UKParliament.CodeTest.Services.Models;
-using UKParliament.CodeTest.Services.Results;
-
+﻿using UKParliament.CodeTest.Data;
+using UKParliament.CodeTest.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Threading.Tasks;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
-namespace UKParliament.CodeTest.Services.Implementations
+namespace UKParliament.CodeTest.Services
 {
     public sealed class BookingService : IBookingService
     {
@@ -29,13 +26,13 @@ namespace UKParliament.CodeTest.Services.Implementations
             {
                 if (model.StartDate > model.EndDate)
                 {
-                    return ServiceResult.Error(ErrorMessages.InvalidDates,HttpStatusCode.BadRequest);
+                    return ServiceResult.Error(ErrorMessages.InvalidDates, HttpStatusCode.BadRequest);
                 }
 
                 // Check the range of the given datetime
                 if ((model.EndDate - model.StartDate).TotalHours > 1)
                 {
-                    return ServiceResult.Error(ErrorMessages.TimeRangeLimit,HttpStatusCode.BadRequest);
+                    return ServiceResult.Error(ErrorMessages.TimeRangeLimit, HttpStatusCode.BadRequest);
                 }
 
                 Booking booking = new Booking(model.PersonId, model.RoomId, model.StartDate, model.EndDate);
@@ -63,7 +60,14 @@ namespace UKParliament.CodeTest.Services.Implementations
 
                 if (booking == null)
                 {
-                    return ServiceResult.Error(ErrorMessages.NotFound,HttpStatusCode.NotFound);
+                    return ServiceResult.Error(ErrorMessages.NotFound, HttpStatusCode.NotFound);
+                }
+
+                var local = _repository.Context.Set<Booking>().Local.FirstOrDefault(e => e.Id == id);
+
+                if (local != null)
+                {
+                    _repository.Context.Entry(local).State = EntityState.Detached;
                 }
 
                 _repository.Remove(booking);
