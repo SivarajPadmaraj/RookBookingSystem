@@ -13,17 +13,17 @@ namespace UKParliament.CodeTest.Services
         /// <summary>
         ///  Get all with the given filtering parameters
         /// </summary>
-        Task<ServiceResult> GetAllAsync(string firstName, string lastName, string email, string phoneNumber, DateTime? dateOfBirth);
+        Task<ServiceResult> GetAllAsync(string Name,  string email,  DateTime? dateOfBirth);
 
         /// <summary>
         /// Add a person
         /// </summary>
-        Task<ServiceResult> AddAsync(PersonRequestModel model);
+        Task<ServiceResult> AddAsync(PersonModel model);
 
         /// <summary>
         /// Update the person
         /// </summary>
-        Task<ServiceResult> UpdateAsync(int id, PersonRequestModel model);
+        Task<ServiceResult> UpdateAsync(int id, PersonModel model);
 
         /// <summary>
         /// Remove the person

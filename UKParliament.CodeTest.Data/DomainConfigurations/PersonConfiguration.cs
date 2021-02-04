@@ -9,9 +9,7 @@ namespace UKParliament.CodeTest.Data
         {
             base.Configure(builder);
 
-            builder.Property(e => e.FirstName).IsRequired();
-            builder.Property(e => e.LastName).IsRequired();
-            builder.Property(e => e.PhoneNumber).IsRequired();
+            builder.Property(e => e.Name).IsRequired();
             builder.Property(e => e.Email);
             builder.Property(e => e.DateOfBirth);
         }

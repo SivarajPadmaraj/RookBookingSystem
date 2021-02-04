@@ -20,7 +20,7 @@ namespace UKParliament.CodeTest.Services
         /// <summary>
         /// Add a booking
         /// </summary>
-        public async Task<ServiceResult> BookAsync(BookingRequestModel model)
+        public async Task<ServiceResult> BookAsync(BookingModel model)
         {
             try
             {

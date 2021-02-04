@@ -26,7 +26,7 @@ namespace UKParliament.CodeTest.Tests
                 await peopleController.AddAsync(person1);
                 await peopleController.AddAsync(person2);
 
-                var result = await peopleController.GetAllAsync(null, null, null, null, null);
+                var result = await peopleController.GetAllAsync(null, null, null);
 
                 //Assert  
                 Assert.Equal(2, ((IEnumerable<PersonModel>)result.Value).Count());
@@ -90,7 +90,7 @@ namespace UKParliament.CodeTest.Tests
             await RunInContextAsync(async peopleController =>
             {
                 var person = GetTestPersonModel();
-                person.FirstName = null;
+                person.Name = null;
 
                 //Act  
                 var result = await peopleController.AddAsync(person);
@@ -109,7 +109,7 @@ namespace UKParliament.CodeTest.Tests
                 var person = GetTestPersonModel();
                 await peopleController.AddAsync(person);
 
-                person.FirstName = "Updated First Name";
+                person.Name = "Updated First Name";
 
                 // Act
                 var result = await peopleController.UpdateAsync(personId, person);
@@ -128,7 +128,7 @@ namespace UKParliament.CodeTest.Tests
                 var person = GetTestPersonModel();
                 await peopleController.AddAsync(person);
 
-                person.LastName = null;
+                person.Name = null;
 
                 // Act
                 var result = await peopleController.UpdateAsync(personId, person);
@@ -189,13 +189,11 @@ namespace UKParliament.CodeTest.Tests
             }
         }
 
-        private PersonRequestModel GetTestPersonModel()
+        private PersonModel GetTestPersonModel()
         {
-            var person = new PersonRequestModel()
+            var person = new PersonModel()
             {
-                FirstName = "Test First Name",
-                LastName = "Test Last Name",
-                PhoneNumber = "123",
+                Name = "Test First Name",
                 Email = "test@test.com",
                 DateOfBirth = new DateTime(1996, 10, 10)
             };

@@ -26,7 +26,7 @@ namespace UKParliament.CodeTest.Tests
                 await peopleController.AddAsync(person);
 
                 var date = DateTime.Now;
-                BookingRequestModel booking = new BookingRequestModel()
+                BookingModel booking = new BookingModel()
                 {
                     PersonId = personId,
                     RoomId = roomId,
@@ -56,7 +56,7 @@ namespace UKParliament.CodeTest.Tests
                 await peopleController.AddAsync(person);
 
                 var date = DateTime.Now;
-                BookingRequestModel booking = new BookingRequestModel()
+                BookingModel booking = new BookingModel()
                 {
                     PersonId = personId,
                     RoomId = roomId,
@@ -87,7 +87,7 @@ namespace UKParliament.CodeTest.Tests
                 await peopleController.AddAsync(person);
 
                 var date = DateTime.Now;
-                BookingRequestModel booking = new BookingRequestModel()
+                BookingModel booking = new BookingModel()
                 {
                     PersonId = personId,
                     RoomId = roomId,
@@ -119,7 +119,7 @@ namespace UKParliament.CodeTest.Tests
                 await peopleController.AddAsync(person);
 
                 var date = DateTime.Now;
-                BookingRequestModel booking = new BookingRequestModel()
+                BookingModel booking = new BookingModel()
                 {
                     PersonId = personId,
                     RoomId = roomId,
@@ -170,13 +170,11 @@ namespace UKParliament.CodeTest.Tests
             return room;
         }
 
-        private PersonRequestModel GetTestPersonModel()
+        private PersonModel GetTestPersonModel()
         {
-            var person = new PersonRequestModel()
+            var person = new PersonModel()
             {
-                FirstName = "Test First Name",
-                LastName = "Test Last Name",
-                PhoneNumber = "123",
+                Name = "Test First Name",
                 Email = "test@test.com",
                 DateOfBirth = new DateTime(1996, 10, 10)
             };

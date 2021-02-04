@@ -17,7 +17,7 @@ namespace UKParliament.CodeTest.Web
             _bookingService = bookingService;
         }
         [HttpPost]
-        public async Task<ObjectResult> BookAsync([FromBody] BookingRequestModel model)
+        public async Task<ObjectResult> BookAsync([FromBody] BookingModel model)
         {
             var result = await _bookingService.BookAsync(model);
 

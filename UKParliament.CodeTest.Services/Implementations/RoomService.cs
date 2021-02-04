@@ -70,7 +70,7 @@ namespace UKParliament.CodeTest.Services
                 List<RoomModel> result = await query.AsNoTracking()
                                                     .Select(e => new RoomModel()
                                                     {
-                                                        Id = e.Id,
+                                                        //Id = e.Id,
                                                         Name = e.Name
                                                     })
                                                     .ToListAsync();
@@ -96,7 +96,7 @@ namespace UKParliament.CodeTest.Services
                                                                                           || (endDate < b.StartDate && startDate < b.StartDate))) // Case 3: When the given range is before the bookings
                                                           .Select(e => new RoomModel()
                                                           {
-                                                              Id = e.Id,
+                                                              //Id = e.Id,
                                                               Name = e.Name
                                                           })
                                                           .ToListAsync();
@@ -119,7 +119,8 @@ namespace UKParliament.CodeTest.Services
                     return ServiceResult.Error(ErrorMessages.NotFound, HttpStatusCode.NotFound);
                 }
 
-                var result = new RoomModel() { Id = room.Id, Name = room.Name };
+                var result = new RoomModel() { //Id = room.Id, 
+                    Name = room.Name };
 
                 return ServiceResult.Success(result);
             }

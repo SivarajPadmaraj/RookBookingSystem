@@ -21,19 +21,18 @@ namespace UKParliament.CodeTest.Services
         /// <summary>
         /// Add a person
         /// </summary>
-        public async Task<ServiceResult> AddAsync(PersonRequestModel model)
+        public async Task<ServiceResult> AddAsync(PersonModel model)
         {
             try
             {
                 if (model == null
-                    || string.IsNullOrWhiteSpace(model.FirstName)
-                    || string.IsNullOrWhiteSpace(model.LastName)
-                    || string.IsNullOrWhiteSpace(model.PhoneNumber))
+                    || string.IsNullOrWhiteSpace(model.Name)
+                    || string.IsNullOrWhiteSpace(model.Email))
                 {
                     return ServiceResult.Error(ErrorMessages.InvalidModel, HttpStatusCode.BadRequest);
                 }
 
-                Person person = new Person(model.FirstName, model.LastName, model.PhoneNumber, model.Email, model.DateOfBirth);
+                Person person = new Person(model.Name, model.Email, model.DateOfBirth);
                 _repository.Add(person);
                 await _repository.SaveChangesAsync();
 
@@ -48,31 +47,21 @@ namespace UKParliament.CodeTest.Services
         /// <summary>
         ///  Get all with the given filtering parameters
         /// </summary>
-        public async Task<ServiceResult> GetAllAsync(string firstName, string lastName, string email, string phoneNumber, DateTime? dateOfBirth)
+        public async Task<ServiceResult> GetAllAsync(string name,  string email, DateTime? dateOfBirth)
         {
             try
             {
                 // Creating predicate for filtering entities
                 var predicate = PredicateBuilder.New<Person>(true);
 
-                if (!string.IsNullOrWhiteSpace(firstName))
+                if (!string.IsNullOrWhiteSpace(name))
                 {
-                    predicate = predicate.And(e => e.FirstName.StartsWith(firstName));
-                }
-
-                if (!string.IsNullOrWhiteSpace(lastName))
-                {
-                    predicate = predicate.And(e => e.LastName.StartsWith(lastName));
+                    predicate = predicate.And(e => e.Name.StartsWith(name));
                 }
 
                 if (!string.IsNullOrWhiteSpace(email))
                 {
                     predicate = predicate.And(e => e.Email.StartsWith(email));
-                }
-
-                if (!string.IsNullOrWhiteSpace(phoneNumber))
-                {
-                    predicate = predicate.And(e => e.PhoneNumber.StartsWith(phoneNumber));
                 }
 
                 if (dateOfBirth.HasValue)
@@ -85,11 +74,9 @@ namespace UKParliament.CodeTest.Services
                 List<PersonModel> result = await query.AsNoTracking()
                                                       .Select(e => new PersonModel()
                                                       {
-                                                          Id = e.Id,
-                                                          FirstName = e.FirstName,
-                                                          LastName = e.LastName,
+                                                          //Id = e.Id,
+                                                          Name = e.Name,
                                                           Email = e.Email,
-                                                          PhoneNumber = e.PhoneNumber,
                                                           DateOfBirth = e.DateOfBirth
                                                       })
                                                       .ToListAsync();
@@ -119,11 +106,9 @@ namespace UKParliament.CodeTest.Services
 
                 var result = new PersonModel()
                              {
-                                 Id = person.Id,
-                                 FirstName = person.FirstName,
-                                 LastName = person.LastName,
+                                 //Id = person.Id,
+                                 Name = person.Name,
                                  Email = person.Email,
-                                 PhoneNumber = person.PhoneNumber,
                                  DateOfBirth = person.DateOfBirth
                              };
 
@@ -172,7 +157,7 @@ namespace UKParliament.CodeTest.Services
         /// <summary>
         /// Update the person
         /// </summary>
-        public async Task<ServiceResult> UpdateAsync(int id, PersonRequestModel model)
+        public async Task<ServiceResult> UpdateAsync(int id, PersonModel model)
         {
             try
             {
@@ -191,7 +176,7 @@ namespace UKParliament.CodeTest.Services
                     _repository.Context.Entry(local).State = EntityState.Detached;
                 }
 
-                person.UpdateFields(model.FirstName, model.LastName, model.PhoneNumber, model.Email, person.DateOfBirth);
+                person.UpdateFields(model.Name,  model.Email, person.DateOfBirth);
                 _repository.Update(person);
                 await _repository.SaveChangesAsync();
 

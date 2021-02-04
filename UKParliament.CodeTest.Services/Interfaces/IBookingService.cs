@@ -8,7 +8,7 @@ namespace UKParliament.CodeTest.Services
         /// <summary>
         /// Add a booking
         /// </summary>
-        Task<ServiceResult> BookAsync(BookingRequestModel model);
+        Task<ServiceResult> BookAsync(BookingModel model);
 
         /// <summary>
         /// Remove the booking

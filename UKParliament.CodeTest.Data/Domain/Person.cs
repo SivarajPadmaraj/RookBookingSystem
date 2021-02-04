@@ -7,9 +7,7 @@ namespace UKParliament.CodeTest.Data
 {
     public sealed class Person : BaseEntity
     {
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-        public string PhoneNumber { get; private set; }
+        public string Name { get; private set; }
         public string Email { get; private set; }
         public DateTime DateOfBirth { get; private set; }
 
@@ -17,42 +15,31 @@ namespace UKParliament.CodeTest.Data
 
         private Person() { }
 
-        public Person(string firstName,
-                      string lastName,
-                      string phoneNumber,
+        public Person(string name,
                       string email,
                       DateTime dateOfBirth)
         {
-            if (string.IsNullOrWhiteSpace(firstName)
-                || string.IsNullOrWhiteSpace(lastName)
-                || string.IsNullOrWhiteSpace(phoneNumber))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new Exception(ErrorMessages.InvalidModel);
             }
 
-            FirstName = firstName;
-            LastName = lastName;
-            PhoneNumber = phoneNumber;
+            Name = name;
             Email = email;
             DateOfBirth = dateOfBirth;
         }
 
-        public void UpdateFields(string firstName,
-                                 string lastName,
-                                 string phoneNumber,
+        public void UpdateFields(string name,
                                  string email,
                                  DateTime dateOfBirth)
         {
-            if (string.IsNullOrWhiteSpace(firstName)
-                || string.IsNullOrWhiteSpace(lastName)
-                || string.IsNullOrWhiteSpace(phoneNumber))
+            if (string.IsNullOrWhiteSpace(name))
+
             {
                 throw new Exception(ErrorMessages.InvalidModel);
             }
 
-            FirstName = firstName;
-            LastName = lastName;
-            PhoneNumber = phoneNumber;
+            Name = name;
             Email = email;
             DateOfBirth = dateOfBirth;
         }
