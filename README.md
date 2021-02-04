@@ -1,30 +1,16 @@
-# UK Parliament - Software Engineering
+# API for fictional room booking system 
 
 ## Introduction
 
-Thanks for taking our code test. We'd like you to implement an API for a fictional room booking system. 
+This solution implements an API for a fictional room booking system. Following actions are implemented under 3 controllers
 
-We have put together a starter solution for you. This starter solution includes:
-* A .net core API
-* Swagger for API docs
-* Associated assemblies
-* Entity framework with an in-memory provided attached
-* The beginnings of a data model. It is important to note **this model is incomplete, you will need to extend it**
-
-You should be able to run this project out of the box in kestrel. 
-
-## Submitting your test
-* After you have complete this test please host your solution on GitHub (or another git based hosting platform)
-* Provide us with a link so we can clone your solution
-
-## Task
-We would like you to do the following
-### People
-* Write a series of endpoints to manage people
-    * Add people        
-    * Update people
-    * Search for and retrieve specific people
-    * Delete people, behaving appropriately if a person is in use
+### People Controller
+* People controller manages person
+    * Get /People  -  Retuns details of  Person based on search critriea       
+    * Post /People -  Create person record in database from request body. Name of person is required  
+    * Get /People/{id} - Returns Person details for the given id
+    * Put /People/{id} - Update the person record from request body for the given id.
+    * Delete /People/{id} - Delete person with given id. All Bookings related to the person will also be deleted
 ### Rooms
 * Write a series of endpoints to manage rooms
     * Add rooms
