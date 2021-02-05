@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace UKParliament.CodeTest.Web
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(ModelValidationAttribute))]
     public class RoomsController : BaseController
     {
         private readonly IRoomService _roomService;

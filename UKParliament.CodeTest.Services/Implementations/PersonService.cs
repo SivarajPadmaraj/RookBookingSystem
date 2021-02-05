@@ -74,7 +74,6 @@ namespace UKParliament.CodeTest.Services
                 List<PersonModel> result = await query.AsNoTracking()
                                                       .Select(e => new PersonModel()
                                                       {
-                                                          //Id = e.Id,
                                                           Name = e.Name,
                                                           Email = e.Email,
                                                           DateOfBirth = e.DateOfBirth
