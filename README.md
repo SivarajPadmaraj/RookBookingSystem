@@ -25,3 +25,12 @@ This solution implements an API for a fictional room booking system. Following a
   * Post /Bookings  - Creates Booking in database from request body.
   * Delete /Bookings/{id} - Delete booking with given id.
 
+
+
+## .NET Core API Best Practices
+
+Following are some best practices implemented while developing this solution.
+
+* SOLID design principle - The solution is designed and implemented adhering to SOLID design principle
+* Project Organization - The solution is split into projects and all artifacts in projects are grouped into folders
+* Repository Pattern for Data Access -   Repository pattern is used as an abstraction layer between the data access and the business logic layer of an application. By using it, we are promoting a more loosely coupled approach to access our data from the database. 
